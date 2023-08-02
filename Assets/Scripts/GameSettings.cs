@@ -14,6 +14,8 @@ public class GameSettings : ScriptableObject
 
     public GameFieldComponent levelFieldPrefab;
 
+    public GatesComponent gatesPrefab;
+
     public LevelObstacle[] possibleObstacles;
 
     public int minObstaclesCount;

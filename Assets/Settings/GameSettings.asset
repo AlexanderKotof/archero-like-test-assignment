@@ -18,6 +18,7 @@ MonoBehaviour:
   minEnemiesCount: 2
   maxEnemiesCount: 5
   levelFieldPrefab: {fileID: 7165331450634981940, guid: 3a5d7d889ca0f3040922bdd2f8054159, type: 3}
+  gatesPrefab: {fileID: 7370111177687037184, guid: bc83928a0427b994588b9567862f4c74, type: 3}
   possibleObstacles:
   - {fileID: 584583604086977524, guid: 1136a6d611dc75f41afc7606c36a1c6f, type: 3}
   - {fileID: 7029065823145793322, guid: 0df2e43f92921bc42be5b3fda44a19ed, type: 3}

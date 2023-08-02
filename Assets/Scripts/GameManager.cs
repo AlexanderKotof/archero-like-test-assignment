@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
 
     public static bool GameStarted;
 
+    public event System.Action LevelCompleted;
+
     private void Awake()
     {
         Instance = this;
@@ -35,7 +37,18 @@ public class GameManager : MonoBehaviour
         Player = ObjectSpawnManager.Spawn(_gameSettings.playerPrefab, playerCell, Quaternion.identity);
         Player.CharacterDied = OnPlayerDied;
 
-        List<Vector3> occupiedCels = new List<Vector3>() { playerCell };
+        var gatesCell = new Vector3(0, 0, _gameSettings.levelSizeY / 2);
+        var gates = ObjectSpawnManager.Spawn(_gameSettings.gatesPrefab, gatesCell, Quaternion.identity);
+
+        List<Vector3> occupiedCels = new List<Vector3>() {
+            playerCell,
+            gatesCell,
+            gatesCell + Vector3.right,
+            gatesCell + Vector3.back,
+            gatesCell + Vector3.left,
+            gatesCell + Vector3.right + Vector3.back,
+            gatesCell + Vector3.left + Vector3.back,
+        };
 
         GenerateObstacles();
         GenerateEnemies();
@@ -76,6 +89,11 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Enemy Died");
         enemy.gameObject.SetActive(false);
+
+        SpawnedEnemies.Remove(enemy);
+
+        if (SpawnedEnemies.Count == 0)
+            LevelCompleted?.Invoke();
     }
 
     private Vector3 GenerateRandomUnoccupiedPosition(List<Vector3> occupiedCels)
@@ -128,6 +146,4 @@ public class GameManager : MonoBehaviour
         }
         return nearest;
     }
-
-    
 }
