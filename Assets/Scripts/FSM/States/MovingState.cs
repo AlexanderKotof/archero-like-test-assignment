@@ -24,7 +24,8 @@ namespace TestAssignment.FSM.States
 
         public override void UpdateState()
         {
-            _movable.Rigidbody.velocity = _movable.MovementDirection * _movable.MoveSpeed;
+            _movable.Rigidbody.velocity += _movable.MovementDirection * _movable.MoveSpeed;
+            _movable.Rigidbody.velocity = Vector3.ClampMagnitude(_movable.Rigidbody.velocity, _movable.MoveSpeed);
 
             if (_movable.MovementDirection != Vector3.zero )
                 _movable.Rigidbody.transform.rotation = Quaternion.LookRotation(_movable.MovementDirection);

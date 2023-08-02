@@ -7,13 +7,8 @@ namespace TestAssignment.Characters
 {
     public class PlayerComponent : CharacterComponent
     {
-        public static PlayerComponent Instance;
-
         private CharacterStateMachine _stateMachine;
-        private void Awake()
-        {
-            Instance = this;
-        }
+
         private void Start()
         {
             _stateMachine = GetComponent<CharacterStateMachine>();
@@ -23,28 +18,29 @@ namespace TestAssignment.Characters
             var shootingState = new ShootingState(this);
 
             idleState.SetTransitions(new Transition(movingState, () => GameManager.GameStarted));
-            movingState.SetTransitions(new Transition(shootingState, () => TargetIsVisible() && MovementDirection == Vector3.zero));
-            shootingState.SetTransitions(new Transition(movingState, () => !TargetIsVisible() || MovementDirection != Vector3.zero));
+            movingState.SetTransitions(new Transition(shootingState, () => Target != null && MovementDirection == Vector3.zero));
+            shootingState.SetTransitions(new Transition(movingState, () => Target == null || MovementDirection != Vector3.zero));
 
             _stateMachine.Initialize(this, idleState, idleState, movingState, shootingState);
         }
+
         private void Update()
         {
+            if (!GameManager.GameStarted)
+                return;
+
+            Target = GameManager.Instance.GetNearestEnemy();
             MovementDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         }
 
-        private bool TargetIsVisible()
+        private void OnCollisionEnter(Collision collision)
         {
-            if (Target == null)
-                return false;
+            if (!collision.collider.TryGetComponent<CharacterComponent>(out var other))
+                return;
 
-            var ray = new Ray(transform.position, Target.transform.position - transform.position);
-            if (Physics.Raycast(ray, out var hit) && hit.collider.TryGetComponent<CharacterComponent>(out _))
-            {
-                return true;
-            }
-
-            return false;
+            var direction = transform.position - collision.collider.transform.position;
+            Rigidbody.AddForce(direction.normalized * 200f);
+            TakeDamage(1);
         }
     }
 }

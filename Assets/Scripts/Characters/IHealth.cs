@@ -7,7 +7,7 @@
 
         bool IsDied { get; }
 
-        delegate void OnDied(IHealth health);
+        delegate void OnDied();
 
         void TakeDamage(float damage);
     }

@@ -247,9 +247,7 @@ MonoBehaviour:
   _startHealth: 5
   _moveSpeed: 2
   _rotationSpeed: 5
-  _shootingSpeed: 1
-  _damage: 1
-  _weapon: {fileID: 0}
+  _weapon: {fileID: 11400000, guid: b7dc43a52caa30340831b5bcbe2a6f5c, type: 2}
   _rigidbody: {fileID: 2436965638486090120}
   _waitingTime: 2
   _movingDistance: 3

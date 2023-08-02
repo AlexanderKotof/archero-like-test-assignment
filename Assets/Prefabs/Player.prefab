@@ -406,12 +406,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98c100e7e6f0adc46b5a3cccace73adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startHealth: 5
+  _startHealth: 10
   _moveSpeed: 4
   _rotationSpeed: 5
-  _shootingSpeed: 2
-  _damage: 2
-  _weapon: {fileID: 0}
+  _weapon: {fileID: 11400000, guid: 4de94cdbb2377dd49a678e80360a7655, type: 2}
   _rigidbody: {fileID: 7996424518413965017}
 --- !u!114 &7996424518413964997
 MonoBehaviour:

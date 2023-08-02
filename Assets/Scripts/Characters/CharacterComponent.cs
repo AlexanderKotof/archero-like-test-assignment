@@ -32,13 +32,18 @@ namespace TestAssignment.Characters
         public Rigidbody Rigidbody => _rigidbody;
         public Transform Transform => transform;
 
+        private void Awake()
+        {
+            _currentHealth = StartHealth;
+        }
+
         public void TakeDamage(float damage)
         {
             _currentHealth -= damage;
 
             if (_currentHealth <= 0)
             {
-                CharacterDied?.Invoke(this);
+                CharacterDied?.Invoke();
             }
         }
     }

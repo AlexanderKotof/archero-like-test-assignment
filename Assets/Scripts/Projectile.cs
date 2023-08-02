@@ -33,6 +33,11 @@ namespace TestAssignment.Weapons
 
         private void OnTriggerEnter(Collider other)
         {
+            if (other.TryGetComponent<Projectile>(out _))
+            {
+                return;
+            }
+
             if (other.TryGetComponent<CharacterComponent>(out var target))
             {
                 if (target == (CharacterComponent)Attacker)
@@ -42,8 +47,12 @@ namespace TestAssignment.Weapons
             }
 
             ObjectSpawnManager.Despawn(this);
-            var particles = ObjectSpawnManager.Spawn(_hitParticles, transform.position, Quaternion.identity);
-            ObjectSpawnManager.DespawnAfter(particles, particles.main.duration);
+
+            if (_hitParticles != null)
+            {
+                var particles = ObjectSpawnManager.Spawn(_hitParticles, transform.position, Quaternion.identity);
+                ObjectSpawnManager.DespawnAfter(particles, particles.main.duration);
+            }
         }
     }
 }

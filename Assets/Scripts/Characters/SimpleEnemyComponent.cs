@@ -39,7 +39,7 @@ namespace TestAssignment.Characters
 
             _stateMachine.Initialize(this, awaitStartState, awaitStartState, waitingState, movingState, shootingState);
 
-            Target = PlayerComponent.Instance;
+            Target = GameManager.Instance.Player;
         }
 
         private bool TargetIsVisible()

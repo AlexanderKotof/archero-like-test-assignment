@@ -16,14 +16,8 @@ namespace TestAssignment.FSM.States
         {
             _shooting = shooting;
         }
-
-        public override void EnterState()
-        {
-            _timer = 0;
-        }
-
+        public override void EnterState() { }
         public override void ExitState() { }
-
         public override void UpdateState()
         {
             _timer += Time.deltaTime;
@@ -42,10 +36,8 @@ namespace TestAssignment.FSM.States
             if (_timer > 1 / _shooting.ShootingSpeed)
             {
                 _timer = 0;
-                Debug.Log($"Shoot at {_shooting.Target}!");
-
                 var projectile = ObjectSpawnManager.Spawn(_shooting.Weapon.Projectile,
-                    _shooting.Transform.position + Vector3.up,
+                    _shooting.Transform.position + Vector3.up + _shooting.Transform.right * 0.2f,
                     _shooting.Transform.rotation);
 
                 projectile.Shot(_shooting, targetDirection);

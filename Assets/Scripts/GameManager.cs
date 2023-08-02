@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using TestAssignment.Characters;
+using TestAssignment.Characters.Interfaces;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,6 +34,7 @@ public class GameManager : MonoBehaviour
 
         var playerCell = new Vector3(0, 0, -_gameSettings.levelSizeY / 2 + 1);
         Player = Instantiate(_gameSettings.playerPrefab, playerCell, Quaternion.identity);
+        Player.CharacterDied = OnPlayerDied;
 
         List<Vector3> occupiedCels = new List<Vector3>() { playerCell };
 
@@ -56,10 +59,24 @@ public class GameManager : MonoBehaviour
             {
                 var randomEnemy = _gameSettings.enemiesPrefabs[Random.Range(0, _gameSettings.enemiesPrefabs.Length)];
                 Vector3 randomPosition = GenerateRandomUnoccupiedPosition(occupiedCels);
-                Instantiate(randomEnemy, randomPosition, Quaternion.identity);
+                var enemy = Instantiate(randomEnemy, randomPosition, Quaternion.identity);
+                enemy.CharacterDied = () => OnEnemyDied(enemy);
+                SpawnedEnemies.Add(enemy);
                 occupiedCels.Add(randomPosition);
             }
         }
+    }
+
+    private void OnPlayerDied()
+    {
+        Debug.Log("Player Died");
+        Player.gameObject.SetActive(false);
+    }
+
+    private void OnEnemyDied(CharacterComponent enemy)
+    {
+        Debug.Log("Enemy Died");
+        enemy.gameObject.SetActive(false);
     }
 
     private Vector3 GenerateRandomUnoccupiedPosition(List<Vector3> occupiedCels)
@@ -92,8 +109,35 @@ public class GameManager : MonoBehaviour
         GameStarted = true;
     }
 
-    void Update()
+    private const float _distanceThreashold = 1f;
+    public CharacterComponent GetNearestEnemy()
     {
-        
+        var distance = float.MaxValue;
+        CharacterComponent nearest = null;
+
+        foreach (var enemy in SpawnedEnemies)
+        {
+            if (!TargetIsVisible(enemy))
+                continue;
+
+            var distanceToEnemy = (enemy.transform.position - Player.transform.position).sqrMagnitude;
+            if (distanceToEnemy + _distanceThreashold < distance)
+            {
+                nearest = enemy;
+                distance = distanceToEnemy;
+            }
+        }
+        return nearest;
+    }
+
+    private bool TargetIsVisible(CharacterComponent Target)
+    {
+        var ray = new Ray(Player.transform.position + Vector3.up, Target.transform.position - Player.transform.position + Vector3.up);
+        if (Physics.Raycast(ray, out var hit) && hit.collider.TryGetComponent<CharacterComponent>(out var target) && target == Target)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
