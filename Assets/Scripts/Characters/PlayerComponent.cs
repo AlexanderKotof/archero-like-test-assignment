@@ -46,10 +46,5 @@ namespace TestAssignment.Characters
 
             return false;
         }
-
-        public override void Move(Vector3 direction)
-        {
-            transform.Translate(direction * MoveSpeed * Time.deltaTime);
-        }
     }
 }

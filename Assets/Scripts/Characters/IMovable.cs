@@ -6,10 +6,13 @@ namespace TestAssignment.Characters.Interfaces
     {
         float MoveSpeed { get; }
 
-        Vector3 MovementDirection { get; }
+        Vector3 MovementDirection { get; set; }
 
         Rigidbody Rigidbody { get; }
+    }
 
-        void Move(Vector3 direction);
+    public interface IDistanceMovable : IMovable
+    {
+        float MovingDistance { get; }
     }
 }

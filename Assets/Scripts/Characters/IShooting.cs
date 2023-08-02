@@ -1,4 +1,6 @@
-﻿namespace TestAssignment.Characters.Interfaces
+﻿using UnityEngine;
+
+namespace TestAssignment.Characters.Interfaces
 {
     public interface IShooting
     {
@@ -6,5 +8,8 @@
         float Damage { get; }
         Weapon Weapon { get; }
         public CharacterComponent Target { get; }
+        public Transform Transform { get; }
+
+        float RotationSpeed { get; }
     }
 }

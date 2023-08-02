@@ -1,4 +1,5 @@
 ﻿using TestAssignment.Characters.Interfaces;
+using UnityEngine;
 
 namespace TestAssignment.FSM.States
 {
@@ -16,11 +17,17 @@ namespace TestAssignment.FSM.States
 
         }
 
-        public override void ExitState() { }
+        public override void ExitState()
+        {
+            _movable.Rigidbody.velocity = Vector3.zero;
+        }
 
         public override void UpdateState()
         {
             _movable.Rigidbody.velocity = _movable.MovementDirection * _movable.MoveSpeed;
+
+            if (_movable.MovementDirection != Vector3.zero )
+                _movable.Rigidbody.transform.rotation = Quaternion.LookRotation(_movable.MovementDirection);
         }
     }
 }

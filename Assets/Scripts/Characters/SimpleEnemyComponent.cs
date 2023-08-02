@@ -1,37 +1,43 @@
-﻿using TestAssignment.FSM;
+﻿using TestAssignment.Characters.Interfaces;
+using TestAssignment.FSM;
 using TestAssignment.FSM.States;
 using TestAssignment.FSM.Transitions;
 using UnityEngine;
 
 namespace TestAssignment.Characters
 {
-    public class SimpleEnemyComponent : CharacterComponent
+    public class SimpleEnemyComponent : CharacterComponent, IDistanceMovable
     {
+        [SerializeField]
+        private float _waitingTime;
+
+        [SerializeField]
+        private float _movingDistance;
+
         private CharacterStateMachine _stateMachine;
-
-        public override void Move(Vector3 direction)
-        {
-            transform.Translate(direction * MoveSpeed * Time.deltaTime);
-        }
-
-        private void Update()
-        {
-            MovementDirection = Vector3.right;
-        }
+        public float MovingDistance => _movingDistance;
 
         private void Start()
         {
             _stateMachine = GetComponent<CharacterStateMachine>();
 
-            var idleState = new IdleState();
-            var movingState = new MovingState(this);
+            var awaitStartState = new IdleState();
+            var waitingState = new WaitTimeState(_waitingTime);
+            var movingState = new DistanceMovingState(this);
             var shootingState = new ShootingState(this);
 
-            idleState.SetTransitions(new Transition(movingState, () => GameManager.GameStarted));
-            movingState.SetTransitions(new Transition(shootingState, () => TargetIsVisible()));
+            awaitStartState.SetTransitions(new Transition(movingState, () => GameManager.GameStarted));
+            waitingState.SetTransitions(
+                new Transition(movingState, waitingState.WaitIsOver),
+                new Transition(shootingState, TargetIsVisible)
+                );
+            movingState.SetTransitions(
+                new Transition(shootingState, TargetIsVisible),
+                new Transition(waitingState, movingState.DistancePassed)
+                );
             shootingState.SetTransitions(new Transition(movingState, () => !TargetIsVisible()));
 
-            _stateMachine.Initialize(this, idleState, idleState, movingState, shootingState);
+            _stateMachine.Initialize(this, awaitStartState, awaitStartState, waitingState, movingState, shootingState);
 
             Target = PlayerComponent.Instance;
         }
@@ -42,7 +48,7 @@ namespace TestAssignment.Characters
                 return false;
 
             var ray = new Ray(transform.position + Vector3.up, Target.transform.position - transform.position + Vector3.up);
-            if (Physics.Raycast(ray, out var hit) && hit.collider.TryGetComponent<CharacterComponent>(out _))
+            if (Physics.Raycast(ray, out var hit) && hit.collider.TryGetComponent<CharacterComponent>(out var target) && Target == target)
             {
                 return true;
             }
