@@ -1,4 +1,6 @@
-﻿using TestAssignment.Characters.Interfaces;
+﻿using Newbeedev.ObjectsPool;
+using TestAssignment.Characters;
+using TestAssignment.Characters.Interfaces;
 using UnityEngine;
 
 namespace TestAssignment.FSM.States
@@ -41,7 +43,19 @@ namespace TestAssignment.FSM.States
             {
                 _timer = 0;
                 Debug.Log($"Shoot at {_shooting.Target}!");
+
+                var projectile = ObjectSpawnManager.Spawn(_shooting.Weapon.Projectile,
+                    _shooting.Transform.position + Vector3.up,
+                    _shooting.Transform.rotation);
+
+                projectile.Shot(_shooting, targetDirection);
+                projectile.OnCharacterHit = HitTarget;
             }
+        }
+
+        private void HitTarget(CharacterComponent target, IShooting attacker)
+        {
+            target.TakeDamage(attacker.Damage);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using TestAssignment.Characters.Interfaces;
+using TestAssignment.Weapons;
 using UnityEngine;
 
 namespace TestAssignment.Characters
@@ -13,10 +14,6 @@ namespace TestAssignment.Characters
         [SerializeField]
         private float _rotationSpeed;
         [SerializeField]
-        private float _shootingSpeed;
-        [SerializeField]
-        private float _damage;
-        [SerializeField]
         private Weapon _weapon;
         [SerializeField]
         private Rigidbody _rigidbody;
@@ -26,14 +23,14 @@ namespace TestAssignment.Characters
         public float CurrentHealth => _currentHealth;
         public bool IsDied => _currentHealth <= 0;
         public float MoveSpeed => _moveSpeed;
-        public float ShootingSpeed => _shootingSpeed;
-        public float Damage => _damage;
+        public float RotationSpeed => _rotationSpeed;
+        public float ShootingSpeed => _weapon.ShootingSpeed;
+        public float Damage => _weapon.Damage;
         public CharacterComponent Target { get; set; }
         public Vector3 MovementDirection { get; set; }
         public Weapon Weapon => _weapon;
         public Rigidbody Rigidbody => _rigidbody;
         public Transform Transform => transform;
-        public float RotationSpeed => _rotationSpeed;
 
         public void TakeDamage(float damage)
         {
