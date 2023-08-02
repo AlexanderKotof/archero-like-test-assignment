@@ -29,31 +29,17 @@ namespace TestAssignment.Characters
             awaitStartState.SetTransitions(new Transition(movingState, () => GameManager.GameStarted));
             waitingState.SetTransitions(
                 new Transition(movingState, waitingState.WaitIsOver),
-                new Transition(shootingState, TargetIsVisible)
+                new Transition(shootingState, () => ShootingUtils.TargetIsVisible(this, Target))
                 );
             movingState.SetTransitions(
-                new Transition(shootingState, TargetIsVisible),
+                new Transition(shootingState, () => ShootingUtils.TargetIsVisible(this, Target)),
                 new Transition(waitingState, movingState.DistancePassed)
                 );
-            shootingState.SetTransitions(new Transition(movingState, () => !TargetIsVisible()));
+            shootingState.SetTransitions(new Transition(movingState, () => !ShootingUtils.TargetIsVisible(this, Target)));
 
             _stateMachine.Initialize(this, awaitStartState, awaitStartState, waitingState, movingState, shootingState);
 
             Target = GameManager.Instance.Player;
-        }
-
-        private bool TargetIsVisible()
-        {
-            if (Target == null)
-                return false;
-
-            var ray = new Ray(transform.position + Vector3.up, Target.transform.position - transform.position + Vector3.up);
-            if (Physics.Raycast(ray, out var hit) && hit.collider.TryGetComponent<CharacterComponent>(out var target) && Target == target)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

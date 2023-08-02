@@ -1,8 +1,7 @@
+using Newbeedev.ObjectsPool;
 using System.Collections.Generic;
 using TestAssignment.Characters;
-using TestAssignment.Characters.Interfaces;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,7 +32,7 @@ public class GameManager : MonoBehaviour
         levelField.SetSize(_gameSettings.levelSizeX, _gameSettings.levelSizeY);
 
         var playerCell = new Vector3(0, 0, -_gameSettings.levelSizeY / 2 + 1);
-        Player = Instantiate(_gameSettings.playerPrefab, playerCell, Quaternion.identity);
+        Player = ObjectSpawnManager.Spawn(_gameSettings.playerPrefab, playerCell, Quaternion.identity);
         Player.CharacterDied = OnPlayerDied;
 
         List<Vector3> occupiedCels = new List<Vector3>() { playerCell };
@@ -48,7 +47,7 @@ public class GameManager : MonoBehaviour
             {
                 var randomObstacle = _gameSettings.possibleObstacles[Random.Range(0, _gameSettings.possibleObstacles.Length)];
                 Vector3 randomPosition = GenerateRandomUnoccupiedPosition(occupiedCels);
-                Instantiate(randomObstacle, randomPosition, Quaternion.identity);
+                ObjectSpawnManager.Spawn(randomObstacle, randomPosition, Quaternion.identity);
                 occupiedCels.Add(randomPosition);
             }
         }
@@ -59,7 +58,7 @@ public class GameManager : MonoBehaviour
             {
                 var randomEnemy = _gameSettings.enemiesPrefabs[Random.Range(0, _gameSettings.enemiesPrefabs.Length)];
                 Vector3 randomPosition = GenerateRandomUnoccupiedPosition(occupiedCels);
-                var enemy = Instantiate(randomEnemy, randomPosition, Quaternion.identity);
+                var enemy = ObjectSpawnManager.Spawn(randomEnemy, randomPosition, Quaternion.identity);
                 enemy.CharacterDied = () => OnEnemyDied(enemy);
                 SpawnedEnemies.Add(enemy);
                 occupiedCels.Add(randomPosition);
@@ -108,16 +107,16 @@ public class GameManager : MonoBehaviour
     {
         GameStarted = true;
     }
-
-    private const float _distanceThreashold = 1f;
     public CharacterComponent GetNearestEnemy()
     {
+        const float _distanceThreashold = 1f;
+
         var distance = float.MaxValue;
         CharacterComponent nearest = null;
 
         foreach (var enemy in SpawnedEnemies)
         {
-            if (!TargetIsVisible(enemy))
+            if (!ShootingUtils.TargetIsVisible(Player, enemy))
                 continue;
 
             var distanceToEnemy = (enemy.transform.position - Player.transform.position).sqrMagnitude;
@@ -130,14 +129,5 @@ public class GameManager : MonoBehaviour
         return nearest;
     }
 
-    private bool TargetIsVisible(CharacterComponent Target)
-    {
-        var ray = new Ray(Player.transform.position + Vector3.up, Target.transform.position - Player.transform.position + Vector3.up);
-        if (Physics.Raycast(ray, out var hit) && hit.collider.TryGetComponent<CharacterComponent>(out var target) && target == Target)
-        {
-            return true;
-        }
-
-        return false;
-    }
+    
 }
