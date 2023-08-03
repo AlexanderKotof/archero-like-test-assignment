@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace TestAssignment.Characters
 {
-    public class SimpleEnemyComponent : BaseCharacterComponent, IDistanceMovable
+    public class SimpleEnemyComponent : BaseCharacterComponent, IDistanceMovable, IRewardable
     {
         [SerializeField]
         private float _waitingTime;
@@ -18,6 +18,14 @@ namespace TestAssignment.Characters
 
         private CharacterStateMachine _stateMachine;
         public float MovingDistance => _movingDistance;
+
+        [SerializeField]
+        private int _minReward;
+
+        [SerializeField]
+        private int _maxReward;
+
+        public int GetReward() => Random.Range(_minReward, _maxReward);
 
         // setup state machine
         private void Awake()

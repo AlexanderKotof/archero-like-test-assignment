@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TestAssignment.Characters;
+using TestAssignment.Characters.Interfaces;
 using TestAssignment.Core.Data;
 using TestAssignment.Core.Settings;
 using TestAssignment.Input;
@@ -12,7 +13,6 @@ using UnityEngine;
 
 namespace TestAssignment.Core
 {
-
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance { get; private set; }
@@ -125,6 +125,9 @@ namespace TestAssignment.Core
             ObjectSpawnManager.Despawn(enemy);
 
             SpawnedEnemies.Remove(enemy);
+
+            if (enemy is IRewardable rewardableEnemy)
+                PlayerData.PlayerCoins += rewardableEnemy.GetReward();
 
             if (SpawnedEnemies.Count == 0)
                 LevelCompleted?.Invoke();
