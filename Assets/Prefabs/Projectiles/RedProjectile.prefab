@@ -299,7 +299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 10
   _rigidbody: {fileID: 5913011216465094414}
-  _hitParticles: {fileID: 0}
+  _hitParticles: {fileID: 833788674411290323, guid: 96a8d1c580ad4e94782dc621b0c0f2a0, type: 3}
 --- !u!54 &5913011216465094414
 Rigidbody:
   m_ObjectHideFlags: 0

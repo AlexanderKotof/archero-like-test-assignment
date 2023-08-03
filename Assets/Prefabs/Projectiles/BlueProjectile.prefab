@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 5913011216465094414}
   - component: {fileID: 5913011216465094401}
   m_Layer: 0
-  m_Name: PlayerProjectile
+  m_Name: BlueProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 10
   _rigidbody: {fileID: 5913011216465094414}
-  _hitParticles: {fileID: 0}
+  _hitParticles: {fileID: 833788674411290323, guid: b0941f98929187d469c087ad0310aaed, type: 3}
 --- !u!54 &5913011216465094414
 Rigidbody:
   m_ObjectHideFlags: 0
