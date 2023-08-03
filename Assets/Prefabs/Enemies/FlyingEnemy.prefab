@@ -329,7 +329,7 @@ MonoBehaviour:
   _startHealth: 3
   _moveSpeed: 3
   _rotationSpeed: 5
-  _weapon: {fileID: 11400000, guid: b7dc43a52caa30340831b5bcbe2a6f5c, type: 2}
+  _weapon: {fileID: 11400000, guid: b7ee0d53f8c3a424383d07bd1e89b2b3, type: 2}
   _rigidbody: {fileID: 2436965638486090120}
   _movingDistance: 5
   _flyingHeight: 2
