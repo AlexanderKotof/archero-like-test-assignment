@@ -5,7 +5,7 @@ namespace TestAssignment.FSM.States
 {
     public class DistanceMovingState : State
     {
-        private IDistanceMovable _movable;
+        protected IDistanceMovable _movable;
         private float _distance;
 
         public DistanceMovingState(IDistanceMovable movable)

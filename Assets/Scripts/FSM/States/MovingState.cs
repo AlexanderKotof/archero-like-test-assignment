@@ -14,7 +14,7 @@ namespace TestAssignment.FSM.States
 
         public override void EnterState()
         {
-
+            _movable.Rigidbody.velocity = Vector3.zero;
         }
 
         public override void ExitState()

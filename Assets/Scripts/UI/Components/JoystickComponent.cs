@@ -10,15 +10,19 @@ namespace TestAssignment.UI.Components
         private RectTransform _joystick;
         private float _maxOffsetDistance = 100;
 
-        private RectTransform _rectTransform;
+        private Vector3 _defaultPosition;
 
         public event Action<Vector2> OnJoystickInput;
 
         private void Awake()
         {
-            _rectTransform = (RectTransform)transform;
+            _defaultPosition = transform.position;
         }
 
+        private void OnDisable()
+        {
+            MoveJoystick(_defaultPosition);
+        }
         public void OnDrag(PointerEventData eventData)
         {
             MoveJoystick(eventData.position);
@@ -31,12 +35,12 @@ namespace TestAssignment.UI.Components
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            MoveJoystick(_rectTransform.position);
+            MoveJoystick(_defaultPosition);
         }
 
         private void MoveJoystick(Vector3 position)
         {
-            position = position - _rectTransform.position;
+            position = position - _defaultPosition;
             position = Vector3.ClampMagnitude(position, _maxOffsetDistance);
 
             _joystick.localPosition = position;

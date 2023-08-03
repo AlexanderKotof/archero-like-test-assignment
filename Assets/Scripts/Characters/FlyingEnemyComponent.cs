@@ -1,51 +1,61 @@
-﻿using TestAssignment.Core;
+﻿using TestAssignment.Characters.Interfaces;
+using TestAssignment.Core;
 using TestAssignment.FSM;
 using TestAssignment.FSM.States;
 using TestAssignment.FSM.Transitions;
+using TestAssignment.Utils;
 using UnityEngine;
 
 namespace TestAssignment.Characters
 {
-    public class FlyingEnemyComponent : BaseCharacterComponent
+    public class FlyingEnemyComponent : BaseCharacterComponent, IRewardable, IDistanceMovable
     {
         private CharacterStateMachine _stateMachine;
 
-        private void Update()
-        {
-            var direction = Target.transform.position - transform.position;
-            direction.y = 0;
-            MovementDirection = direction;
-        }
+        [SerializeField]
+        private float _movingDistance;
+        [SerializeField]
+        private float _flyingHeight;
+        [SerializeField]
+        private int _minReward;
+        [SerializeField]
+        private int _maxReward;
+        [SerializeField]
+        private float _waitingTime;
 
-        private void Start()
+        public float MovingDistance => _movingDistance;
+
+        public int GetReward() => Random.Range(_minReward, _maxReward);
+
+        // setup state machine
+        private void Awake()
         {
             _stateMachine = GetComponent<CharacterStateMachine>();
 
-            var idleState = new IdleState();
-            var movingState = new MovingState(this);
+            var awaitStartState = new IdleState();
+            var waitingState = new WaitTimeState(_waitingTime);
+            var movingState = new FlyingState(this, _flyingHeight);
             var shootingState = new ShootingState(this);
 
-            idleState.SetTransitions(new Transition(movingState, () => GameManager.Instance.GameStarted));
-            movingState.SetTransitions(new Transition(shootingState, () => TargetIsVisible()));
-            shootingState.SetTransitions(new Transition(movingState, () => !TargetIsVisible()));
+            awaitStartState.SetTransitions(new Transition(movingState, () => GameManager.Instance.GameStarted));
+            waitingState.SetTransitions(
+                new Transition(movingState, waitingState.WaitIsOver),
+                new Transition(shootingState, () => ShootingUtils.TargetIsVisible(this, Target))
+                );
+            movingState.SetTransitions(
+                new Transition(shootingState, () => ShootingUtils.TargetIsVisible(this, Target)),
+                new Transition(waitingState, movingState.DistancePassed)
+                );
+            shootingState.SetTransitions(new Transition(movingState, () => !ShootingUtils.TargetIsVisible(this, Target)));
 
-            _stateMachine.Initialize(this, idleState, idleState, movingState, shootingState);
-
-            Target = GameManager.Instance.Player;
+            _stateMachine.Initialize(this, awaitStartState, awaitStartState, movingState, shootingState);
         }
 
-        private bool TargetIsVisible()
+        // when enemy respawned set waitForStart state and restore full health
+        private void OnEnable()
         {
-            if (Target == null)
-                return false;
-
-            var ray = new Ray(transform.position, Target.transform.position - transform.position);
-            if (Physics.Raycast(ray, out var hit) && hit.collider.TryGetComponent<BaseCharacterComponent>(out _))
-            {
-                return true;
-            }
-
-            return false;
+            RestoreHealth();
+            _stateMachine.SetDefaultState();
         }
     }
 }

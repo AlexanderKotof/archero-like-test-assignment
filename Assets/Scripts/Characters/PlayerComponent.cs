@@ -22,16 +22,24 @@ namespace TestAssignment.Characters
             _stateMachine = GetComponent<CharacterStateMachine>();
 
             var waitForStartState = new IdleState();
+            var standingState = new IdleState();
             var movingState = new MovingState(this);
             var shootingState = new ShootingState(this);
             _uncontrollableState = new WaitTimeState(_uncontrollableTime);
 
-            waitForStartState.SetTransitions(new Transition(movingState, () => GameManager.Instance.GameStarted));
-            movingState.SetTransitions(new Transition(shootingState, () => Target != null && MovementDirection == Vector3.zero));
-            shootingState.SetTransitions(new Transition(movingState, () => Target == null || MovementDirection != Vector3.zero));
-            _uncontrollableState.SetTransitions(new Transition(movingState, _uncontrollableState.WaitIsOver));
+            waitForStartState.SetTransitions(new Transition(standingState, () => GameManager.Instance.GameStarted));
+            standingState.SetTransitions(
+                new Transition(movingState, () => MovementDirection != Vector3.zero),
+                new Transition(shootingState, () => Target != null )
+                );
+            movingState.SetTransitions(new Transition(standingState, () => MovementDirection == Vector3.zero));
+            shootingState.SetTransitions(
+                new Transition(standingState, () => Target == null),
+                new Transition(movingState, () => MovementDirection != Vector3.zero)
+                );
+            _uncontrollableState.SetTransitions(new Transition(standingState, _uncontrollableState.WaitIsOver));
 
-            _stateMachine.Initialize(this, waitForStartState, waitForStartState, movingState, shootingState, _uncontrollableState);
+            _stateMachine.Initialize(this, waitForStartState, waitForStartState, standingState, movingState, shootingState, _uncontrollableState);
 
             RestoreHealth();
 
