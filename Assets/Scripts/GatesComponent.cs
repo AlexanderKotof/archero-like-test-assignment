@@ -1,3 +1,4 @@
+using TestAssignment.Core;
 using UnityEngine;
 
 public class GatesComponent : MonoBehaviour
@@ -11,7 +12,7 @@ public class GatesComponent : MonoBehaviour
     private const string _idleAnimationName = "GatesIdleAnim";
     private const string _openAnimationName = "OpenDoorAnim";
 
-    public event System.Action GoToNextLevel;
+    public System.Action GoToNextLevel;
 
     private void OnEnable()
     {
@@ -24,6 +25,7 @@ public class GatesComponent : MonoBehaviour
     private void OnDisable()
     {
         GameManager.Instance.LevelCompleted -= Open;
+        GoToNextLevel = null;
     }
 
     public void Open()

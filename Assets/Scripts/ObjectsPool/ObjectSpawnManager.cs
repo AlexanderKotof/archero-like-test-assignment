@@ -64,6 +64,14 @@ namespace Newbeedev.ObjectsPool
             instance.gameObject.SetActive(false);
         }
 
+        public static void DespawnAll()
+        {
+            foreach (var pool in Instance._componentToObjectPools.Values)
+            {
+                pool.DespawnAll();
+            }
+        }
+
         public async static void DespawnAfter(Component instance, float timeSec)
         {
             await Task.Delay((int)(timeSec * 1000));

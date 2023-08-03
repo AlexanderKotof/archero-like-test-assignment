@@ -8,7 +8,6 @@ namespace TestAssignment.Characters
     {
         [SerializeField]
         private float _startHealth;
-        private float _currentHealth;
         [SerializeField]
         private float _moveSpeed;
         [SerializeField]
@@ -20,8 +19,8 @@ namespace TestAssignment.Characters
 
         public IHealth.OnDied CharacterDied;
         public float StartHealth => _startHealth;
-        public float CurrentHealth => _currentHealth;
-        public bool IsDied => _currentHealth <= 0;
+        public float CurrentHealth { get; private set; }
+        public bool IsDied => CurrentHealth <= 0;
         public float MoveSpeed => _moveSpeed;
         public float RotationSpeed => _rotationSpeed;
         public float ShootingSpeed => _weapon.ShootingSpeed;
@@ -32,19 +31,24 @@ namespace TestAssignment.Characters
         public Rigidbody Rigidbody => _rigidbody;
         public Transform Transform => transform;
 
-        private void Awake()
-        {
-            _currentHealth = StartHealth;
-        }
-
         public void TakeDamage(float damage)
         {
-            _currentHealth -= damage;
+            CurrentHealth -= damage;
 
-            if (_currentHealth <= 0)
+            if (CurrentHealth <= 0)
             {
                 CharacterDied?.Invoke();
             }
+        }
+
+        public void RestoreHealth()
+        {
+            CurrentHealth = _startHealth;
+        }
+
+        public void SetTarget(CharacterComponent target)
+        {
+            Target = target;
         }
     }
 }

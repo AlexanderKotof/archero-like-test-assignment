@@ -1,4 +1,5 @@
 ﻿using TestAssignment.Characters.Interfaces;
+using TestAssignment.Core;
 using TestAssignment.FSM;
 using TestAssignment.FSM.States;
 using TestAssignment.FSM.Transitions;
@@ -17,7 +18,8 @@ namespace TestAssignment.Characters
         private CharacterStateMachine _stateMachine;
         public float MovingDistance => _movingDistance;
 
-        private void Start()
+        // setup state machine
+        private void Awake()
         {
             _stateMachine = GetComponent<CharacterStateMachine>();
 
@@ -26,7 +28,7 @@ namespace TestAssignment.Characters
             var movingState = new DistanceMovingState(this);
             var shootingState = new ShootingState(this);
 
-            awaitStartState.SetTransitions(new Transition(movingState, () => GameManager.GameStarted));
+            awaitStartState.SetTransitions(new Transition(movingState, () => GameManager.Instance.GameStarted));
             waitingState.SetTransitions(
                 new Transition(movingState, waitingState.WaitIsOver),
                 new Transition(shootingState, () => ShootingUtils.TargetIsVisible(this, Target))
@@ -38,8 +40,13 @@ namespace TestAssignment.Characters
             shootingState.SetTransitions(new Transition(movingState, () => !ShootingUtils.TargetIsVisible(this, Target)));
 
             _stateMachine.Initialize(this, awaitStartState, awaitStartState, waitingState, movingState, shootingState);
+        }
 
-            Target = GameManager.Instance.Player;
+        // when enemy respawned set waitForStart state and restore full health
+        private void OnEnable()
+        {
+            RestoreHealth();
+            _stateMachine.SetDefaultState();
         }
     }
 }

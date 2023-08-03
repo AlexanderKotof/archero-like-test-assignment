@@ -45,6 +45,14 @@ namespace Newbeedev.ObjectsPool
             return Add();
         }
 
+        public void DespawnAll()
+        {
+            foreach (var obj in _pool)
+            {
+                obj.gameObject.SetActive(false);
+            }
+        }
+
         public void Dispose()
         {
             foreach (var obj in _pool)

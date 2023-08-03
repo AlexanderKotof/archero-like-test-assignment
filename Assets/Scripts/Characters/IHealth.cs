@@ -10,5 +10,7 @@
         delegate void OnDied();
 
         void TakeDamage(float damage);
+
+        void RestoreHealth();
     }
 }

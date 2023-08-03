@@ -1,4 +1,5 @@
-﻿using TestAssignment.Characters;
+﻿using System;
+using TestAssignment.Characters;
 using TestAssignment.FSM.States;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ namespace TestAssignment.FSM
     public class CharacterStateMachine : MonoBehaviour
     {
         public CharacterComponent Character { get; private set; }
+
+        private State _defaultState;
+
         public State CurrentState { get; private set; }
 
         private State[] _states;
@@ -14,11 +18,14 @@ namespace TestAssignment.FSM
         public void Initialize(CharacterComponent character, State defaultState, params State[] states)
         {
             _states = states;
+            _defaultState = defaultState;
+
             Character = character;
+
             SwitchState(defaultState);
         }
 
-        protected void SwitchState(State newState)
+        public void SwitchState(State newState)
         {
             if (CurrentState != null)
                 CurrentState.ExitState();
@@ -35,6 +42,11 @@ namespace TestAssignment.FSM
             }
 
             CurrentState.UpdateState();
+        }
+
+        public void SetDefaultState()
+        {
+            SwitchState(_defaultState);
         }
     }
 }

@@ -10,7 +10,8 @@ namespace TestAssignment.Characters.Interfaces
         Weapon Weapon { get; }
         public CharacterComponent Target { get; }
         public Transform Transform { get; }
-
         float RotationSpeed { get; }
+
+        void SetTarget(CharacterComponent target);
     }
 }
