@@ -1,5 +1,6 @@
 ﻿using Newbeedev.ObjectsPool;
 using System.Collections.Generic;
+using TestAssignment.Core.Settings;
 using UnityEngine;
 
 namespace TestAssignment.Level.Generator
@@ -17,14 +18,14 @@ namespace TestAssignment.Level.Generator
         {
             var levelData = new LevelData();
 
-            var levelField = ObjectSpawnManager.Spawn(_gameSettings.levelFieldPrefab);
-            levelField.SetSize(_gameSettings.levelSizeX, _gameSettings.levelSizeY);
+            var levelField = ObjectSpawnManager.Spawn(_gameSettings.LevelFieldPrefab);
+            levelField.SetSize(_gameSettings.LevelSizeX, _gameSettings.LevelSizeY);
 
-            var playerCell = new Vector3(0, 0, -_gameSettings.levelSizeY / 2 + 1);
-            levelData.player = ObjectSpawnManager.Spawn(_gameSettings.playerPrefab, playerCell, Quaternion.identity);
+            var playerCell = new Vector3(0, 0, -_gameSettings.LevelSizeY / 2 + 1);
+            levelData.player = ObjectSpawnManager.Spawn(_gameSettings.PlayerPrefab, playerCell, Quaternion.identity);
 
-            var gatesCell = new Vector3(0, 0, _gameSettings.levelSizeY / 2);
-            levelData.gates = ObjectSpawnManager.Spawn(_gameSettings.gatesPrefab, gatesCell, Quaternion.identity);
+            var gatesCell = new Vector3(0, 0, _gameSettings.LevelSizeY / 2);
+            levelData.gates = ObjectSpawnManager.Spawn(_gameSettings.GatesPrefab, gatesCell, Quaternion.identity);
 
             List<Vector3> occupiedCels = new List<Vector3>(GetPreoccupiedCels(playerCell, gatesCell));
 
@@ -35,22 +36,22 @@ namespace TestAssignment.Level.Generator
 
             void GenerateObstacles(List<Vector3> occupiedCells)
             {
-                var obstaclesCount = Random.Range(_gameSettings.minObstaclesCount, _gameSettings.maxObstaclesCount);
+                var obstaclesCount = Random.Range(_gameSettings.MinObstaclesCount, _gameSettings.MaxObstaclesCount);
                 for (int i = 0; i < obstaclesCount; i++)
                 {
-                    var randomObstacle = _gameSettings.possibleObstacles[Random.Range(0, _gameSettings.possibleObstacles.Length)];
-                    Vector3 randomPosition = GenerateRandomUnoccupiedPositionInBounds(occupiedCells, _gameSettings.levelSizeX / 2, _gameSettings.levelSizeY / 2);
+                    var randomObstacle = _gameSettings.PossibleObstacles[Random.Range(0, _gameSettings.PossibleObstacles.Length)];
+                    Vector3 randomPosition = GenerateRandomUnoccupiedPositionInBounds(occupiedCells, _gameSettings.LevelSizeX / 2, _gameSettings.LevelSizeY / 2);
                     ObjectSpawnManager.Spawn(randomObstacle, randomPosition, Quaternion.identity);
                     occupiedCells.Add(randomPosition);
                 }
             }
             void GenerateEnemies(List<Vector3> occupiedCells)
             {
-                var enemiesCount = Random.Range(_gameSettings.minEnemiesCount, _gameSettings.maxEnemiesCount);
+                var enemiesCount = Random.Range(_gameSettings.MinEnemiesCount, _gameSettings.MaxEnemiesCount);
                 for (int i = 0; i < enemiesCount; i++)
                 {
-                    var randomEnemy = _gameSettings.enemiesPrefabs[Random.Range(0, _gameSettings.enemiesPrefabs.Length)];
-                    Vector3 randomPosition = GenerateRandomUnoccupiedPositionInBounds(occupiedCells, _gameSettings.levelSizeX / 2, _gameSettings.levelSizeY / 3);
+                    var randomEnemy = _gameSettings.EnemiesPrefabs[Random.Range(0, _gameSettings.EnemiesPrefabs.Length)];
+                    Vector3 randomPosition = GenerateRandomUnoccupiedPositionInBounds(occupiedCells, _gameSettings.LevelSizeX / 2, _gameSettings.LevelSizeY / 3);
                     var enemy = ObjectSpawnManager.Spawn(randomEnemy, randomPosition, Quaternion.identity);
                     levelData.spawnedEnemies.Add(enemy);
                     occupiedCells.Add(randomPosition);

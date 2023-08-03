@@ -2,25 +2,55 @@
 using TestAssignment.Level;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Settings/Game Settings")]
-public class GameSettings : ScriptableObject
+namespace TestAssignment.Core.Settings
 {
-    public PlayerComponent playerPrefab;
+    [CreateAssetMenu(menuName = "Settings/Game Settings")]
+    public class GameSettings : ScriptableObject
+    {
+        public int PreStartDelay => _preStartDelay;
+        [SerializeField]
+        private int _preStartDelay;
 
-    public CharacterComponent[] enemiesPrefabs;
+        public PlayerComponent PlayerPrefab => _playerPrefab;
+        [SerializeField]
+        private PlayerComponent _playerPrefab;
 
-    public int minEnemiesCount;
-    public int maxEnemiesCount;
+        public CharacterComponent[] EnemiesPrefabs => _enemiesPrefabs;
+        [SerializeField]
+        private CharacterComponent[] _enemiesPrefabs;
 
-    public GameFieldComponent levelFieldPrefab;
+        public int MinEnemiesCount => _minEnemiesCount;
+        [SerializeField]
+        private int _minEnemiesCount;
+        public int MaxEnemiesCount => _maxEnemiesCount;
+        [SerializeField]
+        private int _maxEnemiesCount;
 
-    public GatesComponent gatesPrefab;
+        public GameFieldComponent LevelFieldPrefab => _levelFieldPrefab;
+        [SerializeField]
+        private GameFieldComponent _levelFieldPrefab;
 
-    public LevelObstacle[] possibleObstacles;
 
-    public int minObstaclesCount;
-    public int maxObstaclesCount;
+        public GatesComponent GatesPrefab => _gatesPrefab;
+        [SerializeField]
+        private GatesComponent _gatesPrefab;
 
-    public int levelSizeX;
-    public int levelSizeY;
+        public LevelObstacle[] PossibleObstacles => _possibleObstacles;
+        [SerializeField]
+        private LevelObstacle[] _possibleObstacles;
+
+        public int MinObstaclesCount => _minObstaclesCount;
+        public int MaxObstaclesCount => _maxObstaclesCount;
+        [SerializeField]
+        private int _minObstaclesCount;
+        [SerializeField]
+        private int _maxObstaclesCount;
+
+        public int LevelSizeX => _levelSizeX;
+        [SerializeField]
+        private int _levelSizeX;
+        public int LevelSizeY => _levelSizeY;
+        [SerializeField]
+        private int _levelSizeY;
+    }
 }

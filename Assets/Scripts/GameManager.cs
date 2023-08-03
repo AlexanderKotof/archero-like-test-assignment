@@ -1,45 +1,76 @@
 using Newbeedev.ObjectsPool;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TestAssignment.Characters;
+using TestAssignment.Core.Data;
+using TestAssignment.Core.Settings;
+using TestAssignment.Input;
 using TestAssignment.Level.Generator;
+using TestAssignment.UI.Presenters;
 using UnityEngine;
 
 namespace TestAssignment.Core
 {
+
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance { get; private set; }
         public PlayerComponent Player { get; private set; }
+        public List<CharacterComponent> SpawnedEnemies { get; private set; } = new List<CharacterComponent>();
+        public bool GameStarted { get; private set; }
+        public PlayerData PlayerData { get; private set; }
 
         [SerializeField]
         private GameSettings _gameSettings;
-
         private LevelGenerator _levelGenerator;
+        private InputManager _input;
 
-        private List<CharacterComponent> _spawnedEnemies = new List<CharacterComponent>();
-
-        public bool GameStarted { get; private set; }
-
-        public event System.Action LevelCompleted;
+        public event Action LevelCompleted;
 
         private void Awake()
         {
             Instance = this;
             _levelGenerator = new LevelGenerator(_gameSettings);
+            _input = new InputManager();
+            PlayerData = new PlayerData()
+            {
+                CurrentLevel = 1,
+                PlayerCoins = 0,
+            };
         }
-
         private void Start()
         {
-            GameBegins();
+            GameStarted = false;
+            CreateLevel();
+            MainMenuViewPresenter.ShowMainMenu(StartCountdown);
         }
 
-        private void GameBegins()
+        private void StartNewGame()
         {
             GameStarted = false;
-
             CreateLevel();
+            StartCountdown();
+        }
+        private void GoToNextLevel()
+        {
+            PlayerData.CurrentLevel++;
+            ClearLevel();
+            StartNewGame();
+        }
+        private async void StartCountdown()
+        {
+            PreStartViewPresenter.ShowPreStartScreen();
 
-            Invoke(nameof(StartGame), 3f);
+            var delay = _gameSettings.PreStartDelay;
+            for (int i = 0; i < delay; i++)
+            {
+                PreStartViewPresenter.UpdateCounter(delay - i);
+                await Task.Delay(1000);
+            }
+
+            InGameViewPresenter.ShowInGameScreen(Player, PlayerData, _input, OnPausePressed);
+            GameStarted = true;
         }
 
         private void CreateLevel()
@@ -48,64 +79,55 @@ namespace TestAssignment.Core
             Player = data.player;
             Player.CharacterDied = OnPlayerDied;
 
-            _spawnedEnemies = data.spawnedEnemies;
-            foreach (var enemy in _spawnedEnemies)
+            SpawnedEnemies = data.spawnedEnemies;
+            foreach (var enemy in SpawnedEnemies)
             {
                 enemy.CharacterDied = () => OnEnemyDied(enemy);
                 enemy.SetTarget(Player);
             }
 
-            data.gates.GoToNextLevel = RegenerateLevel;
+            data.gates.GoToNextLevel = GoToNextLevel;
         }
-
-        private void StartGame()
-        {
-            GameStarted = true;
-        }
-
-        private void RegenerateLevel()
+        private void ClearLevel()
         {
             ObjectSpawnManager.DespawnAll();
-            _spawnedEnemies.Clear();
-            GameBegins();
+            SpawnedEnemies.Clear();
+        }
+
+        private void OnPausePressed()
+        {
+            PauseViewPresenter.ShowPauseScreen(OnResumePressed);
+            Time.timeScale = 0;
+        }
+        private void OnResumePressed()
+        {
+            InGameViewPresenter.ShowInGameScreen(Player, PlayerData, _input, OnPausePressed);
+            Time.timeScale = 1;
         }
 
         private void OnPlayerDied()
         {
-            RegenerateLevel();
-            Player.RestoreHealth();
-        }
+            DefeatedViewPresenter.ShowDefeatedScreen(PlayerData, RestartGame);
+            ObjectSpawnManager.Despawn(Player);
 
+            void RestartGame()
+            {
+                Player.RestoreHealth();
+                PlayerData.PlayerCoins = 0;
+                PlayerData.CurrentLevel = 1;
+
+                ClearLevel();
+                StartNewGame();
+            }
+        }
         private void OnEnemyDied(CharacterComponent enemy)
         {
             ObjectSpawnManager.Despawn(enemy);
 
-            _spawnedEnemies.Remove(enemy);
+            SpawnedEnemies.Remove(enemy);
 
-            if (_spawnedEnemies.Count == 0)
+            if (SpawnedEnemies.Count == 0)
                 LevelCompleted?.Invoke();
-        }
-
-        public CharacterComponent GetNearestEnemyToPlayer()
-        {
-            const float _distanceThreashold = 1f;
-
-            var distance = float.MaxValue;
-            CharacterComponent nearest = null;
-
-            foreach (var enemy in _spawnedEnemies)
-            {
-                if (!ShootingUtils.TargetIsVisible(Player, enemy))
-                    continue;
-
-                var distanceToEnemy = (enemy.transform.position - Player.transform.position).sqrMagnitude;
-                if (distanceToEnemy + _distanceThreashold < distance)
-                {
-                    nearest = enemy;
-                    distance = distanceToEnemy;
-                }
-            }
-            return nearest;
         }
     }
 }

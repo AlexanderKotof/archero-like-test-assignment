@@ -2,6 +2,7 @@
 using TestAssignment.FSM;
 using TestAssignment.FSM.States;
 using TestAssignment.FSM.Transitions;
+using TestAssignment.Input;
 using UnityEngine;
 
 namespace TestAssignment.Characters
@@ -32,6 +33,18 @@ namespace TestAssignment.Characters
             _stateMachine.Initialize(this, waitForStartState, waitForStartState, movingState, shootingState, _uncontrollableState);
 
             RestoreHealth();
+
+            InputManager.MovementInput += OnMovementInput;
+        }
+
+        private void OnDestroy()
+        {
+            InputManager.MovementInput -= OnMovementInput;
+        }
+
+        private void OnMovementInput(Vector2 obj)
+        {
+            MovementDirection = new Vector3(obj.x, 0, obj.y);
         }
 
         // when player enters new level set waitForStart state
@@ -45,8 +58,29 @@ namespace TestAssignment.Characters
             if (!GameManager.Instance.GameStarted)
                 return;
 
-            Target = GameManager.Instance.GetNearestEnemyToPlayer();
-            MovementDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            Target = GetNearestVisibleEnemy();
+        }
+
+        private CharacterComponent GetNearestVisibleEnemy()
+        {
+            const float _distanceThreashold = 1f;
+
+            var distance = float.MaxValue;
+            CharacterComponent nearest = null;
+
+            foreach (var enemy in GameManager.Instance.SpawnedEnemies)
+            {
+                if (!ShootingUtils.TargetIsVisible(this, enemy))
+                    continue;
+
+                var distanceToEnemy = (enemy.transform.position - transform.position).sqrMagnitude;
+                if (distanceToEnemy + _distanceThreashold < distance)
+                {
+                    nearest = enemy;
+                    distance = distanceToEnemy;
+                }
+            }
+            return nearest;
         }
 
         // when player collides with enemy apply opposite force and take damage
