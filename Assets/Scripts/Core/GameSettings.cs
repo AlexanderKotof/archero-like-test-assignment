@@ -1,5 +1,6 @@
 ﻿using TestAssignment.Characters;
 using TestAssignment.Level;
+using TestAssignment.Weapons;
 using UnityEngine;
 
 namespace TestAssignment.Core.Settings
@@ -14,6 +15,10 @@ namespace TestAssignment.Core.Settings
         public PlayerComponent PlayerPrefab => _playerPrefab;
         [SerializeField]
         private PlayerComponent _playerPrefab;
+
+        public Weapon DefaultWeapon => _defaultWeapon;
+        [SerializeField]
+        private Weapon _defaultWeapon;
 
         public BaseCharacterComponent[] EnemiesPrefabs => _enemiesPrefabs;
         [SerializeField]

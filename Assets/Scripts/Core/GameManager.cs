@@ -43,6 +43,7 @@ namespace TestAssignment.Core
         {
             GameStarted = false;
             CreateLevel();
+            Player.SetWeapon(_gameSettings.DefaultWeapon);
             MainMenuViewPresenter.ShowMainMenu(StartCountdown);
         }
 
@@ -77,12 +78,12 @@ namespace TestAssignment.Core
         {
             var data = _levelGenerator.Generate();
             Player = data.player;
-            Player.CharacterDied = OnPlayerDied;
+            Player.CharacterDied += OnPlayerDied;
 
             SpawnedEnemies = data.spawnedEnemies;
             foreach (var enemy in SpawnedEnemies)
             {
-                enemy.CharacterDied = () => OnEnemyDied(enemy);
+                enemy.CharacterDied += OnEnemyDied;
                 enemy.SetTarget(Player);
             }
 
@@ -105,14 +106,15 @@ namespace TestAssignment.Core
             Time.timeScale = 1;
         }
 
-        private void OnPlayerDied()
+        private void OnPlayerDied(BaseCharacterComponent character)
         {
             DefeatedViewPresenter.ShowDefeatedScreen(PlayerData, RestartGame);
             ObjectSpawnManager.Despawn(Player);
 
             void RestartGame()
             {
-                Player.RestoreHealth();
+                Player.RestoreHealth(Player.StartHealth);
+                Player.SetWeapon(_gameSettings.DefaultWeapon);
                 PlayerData.PlayerCoins = 0;
                 PlayerData.CurrentLevel = 1;
 
@@ -123,7 +125,6 @@ namespace TestAssignment.Core
         private void OnEnemyDied(BaseCharacterComponent enemy)
         {
             ObjectSpawnManager.Despawn(enemy);
-
             SpawnedEnemies.Remove(enemy);
 
             if (enemy is IRewardable rewardableEnemy)

@@ -207,6 +207,7 @@ GameObject:
   - component: {fileID: 2436965638486090124}
   - component: {fileID: 2436965638486090121}
   - component: {fileID: 2436965638486090120}
+  - component: {fileID: -3917287967903810710}
   m_Layer: 0
   m_Name: SimpleEnemy
   m_TagString: Untagged
@@ -295,6 +296,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
+--- !u!114 &-3917287967903810710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2436965638486090125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b64853523648a8d42ab682e55fafbdda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _possibleDrop:
+  - {fileID: 6012147805226557377, guid: 67106ae84f1ad7e4a9821866380b42f0, type: 3}
+  - {fileID: 8395189356802344878, guid: 2640a8c1e10ac604a829007cb1fb4bea, type: 3}
+  _dropChance: 0.5
 --- !u!1 &2436965639727788044
 GameObject:
   m_ObjectHideFlags: 0

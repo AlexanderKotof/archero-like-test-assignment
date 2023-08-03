@@ -41,7 +41,7 @@ namespace TestAssignment.Characters
 
             _stateMachine.Initialize(this, waitForStartState, waitForStartState, standingState, movingState, shootingState, _uncontrollableState);
 
-            RestoreHealth();
+            RestoreHealth(StartHealth);
 
             InputManager.MovementInput += OnMovementInput;
         }

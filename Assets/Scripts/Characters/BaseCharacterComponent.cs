@@ -37,18 +37,28 @@ namespace TestAssignment.Characters
 
             if (CurrentHealth <= 0)
             {
-                CharacterDied?.Invoke();
+                CharacterDied?.Invoke(this);
             }
         }
 
-        public void RestoreHealth()
+        public void RestoreHealth(float value)
         {
-            CurrentHealth = _startHealth;
+            CurrentHealth = Mathf.Clamp(CurrentHealth + value, 1, StartHealth);
         }
 
         public void SetTarget(BaseCharacterComponent target)
         {
             Target = target;
+        }
+
+        public void SetWeapon(Weapon weapon)
+        {
+            _weapon = weapon;
+        }
+
+        private void OnDisable()
+        {
+            CharacterDied = null;
         }
     }
 }

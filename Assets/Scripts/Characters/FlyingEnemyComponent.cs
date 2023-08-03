@@ -54,7 +54,7 @@ namespace TestAssignment.Characters
         // when enemy respawned set waitForStart state and restore full health
         private void OnEnable()
         {
-            RestoreHealth();
+            RestoreHealth(StartHealth);
             _stateMachine.SetDefaultState();
         }
     }

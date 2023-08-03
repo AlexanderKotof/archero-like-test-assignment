@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _preStartDelay: 3
   _playerPrefab: {fileID: 7996424518413964996, guid: 811a3aa5f3d3d8c4d856a96e579fcc91, type: 3}
+  _defaultWeapon: {fileID: 11400000, guid: b7dc43a52caa30340831b5bcbe2a6f5c, type: 2}
   _enemiesPrefabs:
   - {fileID: 2436965638486090123, guid: c23ede249e3637743b6ae85b7be08b35, type: 3}
   - {fileID: 2436965638486090123, guid: cf01c3cc1868bd94eb8ccc3d8c094272, type: 3}

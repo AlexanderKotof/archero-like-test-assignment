@@ -7,10 +7,10 @@
 
         bool IsDied { get; }
 
-        delegate void OnDied();
+        delegate void OnDied(BaseCharacterComponent character);
 
         void TakeDamage(float damage);
 
-        void RestoreHealth();
+        void RestoreHealth(float value);
     }
 }

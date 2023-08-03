@@ -13,5 +13,7 @@ namespace TestAssignment.Characters.Interfaces
         float RotationSpeed { get; }
 
         void SetTarget(BaseCharacterComponent target);
+
+        void SetWeapon(Weapon weapon);
     }
 }
