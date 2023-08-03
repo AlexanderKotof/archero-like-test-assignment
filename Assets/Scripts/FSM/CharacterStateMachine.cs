@@ -7,7 +7,7 @@ namespace TestAssignment.FSM
 {
     public class CharacterStateMachine : MonoBehaviour
     {
-        public CharacterComponent Character { get; private set; }
+        public BaseCharacterComponent Character { get; private set; }
 
         private State _defaultState;
 
@@ -15,7 +15,7 @@ namespace TestAssignment.FSM
 
         private State[] _states;
 
-        public void Initialize(CharacterComponent character, State defaultState, params State[] states)
+        public void Initialize(BaseCharacterComponent character, State defaultState, params State[] states)
         {
             _states = states;
             _defaultState = defaultState;

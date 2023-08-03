@@ -7,6 +7,6 @@ namespace TestAssignment.Level.Generator
     {
         public PlayerComponent player;
         public GatesComponent gates;
-        public List<CharacterComponent> spawnedEnemies = new List<CharacterComponent>();
+        public List<BaseCharacterComponent> spawnedEnemies = new List<BaseCharacterComponent>();
     }
 }

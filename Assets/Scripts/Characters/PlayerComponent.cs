@@ -3,11 +3,12 @@ using TestAssignment.FSM;
 using TestAssignment.FSM.States;
 using TestAssignment.FSM.Transitions;
 using TestAssignment.Input;
+using TestAssignment.Utils;
 using UnityEngine;
 
 namespace TestAssignment.Characters
 {
-    public class PlayerComponent : CharacterComponent
+    public class PlayerComponent : BaseCharacterComponent
     {
         private CharacterStateMachine _stateMachine;
         private WaitTimeState _uncontrollableState;
@@ -61,12 +62,12 @@ namespace TestAssignment.Characters
             Target = GetNearestVisibleEnemy();
         }
 
-        private CharacterComponent GetNearestVisibleEnemy()
+        private BaseCharacterComponent GetNearestVisibleEnemy()
         {
             const float _distanceThreashold = 1f;
 
             var distance = float.MaxValue;
-            CharacterComponent nearest = null;
+            BaseCharacterComponent nearest = null;
 
             foreach (var enemy in GameManager.Instance.SpawnedEnemies)
             {
@@ -86,7 +87,7 @@ namespace TestAssignment.Characters
         // when player collides with enemy apply opposite force and take damage
         private void OnCollisionEnter(Collision collision)
         {
-            if (!collision.collider.TryGetComponent<CharacterComponent>(out _))
+            if (!collision.collider.TryGetComponent<BaseCharacterComponent>(out _))
                 return;
 
             // to prevent absorption of push impulse by walking, make the player uncontrollable

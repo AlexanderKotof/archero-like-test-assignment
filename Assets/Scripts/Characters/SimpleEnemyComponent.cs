@@ -3,11 +3,12 @@ using TestAssignment.Core;
 using TestAssignment.FSM;
 using TestAssignment.FSM.States;
 using TestAssignment.FSM.Transitions;
+using TestAssignment.Utils;
 using UnityEngine;
 
 namespace TestAssignment.Characters
 {
-    public class SimpleEnemyComponent : CharacterComponent, IDistanceMovable
+    public class SimpleEnemyComponent : BaseCharacterComponent, IDistanceMovable
     {
         [SerializeField]
         private float _waitingTime;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TestAssignment.Characters
 {
-    public abstract class CharacterComponent : MonoBehaviour, IHealth, IMovable, IShooting
+    public abstract class BaseCharacterComponent : MonoBehaviour, IHealth, IMovable, IShooting
     {
         [SerializeField]
         private float _startHealth;
@@ -25,7 +25,7 @@ namespace TestAssignment.Characters
         public float RotationSpeed => _rotationSpeed;
         public float ShootingSpeed => _weapon.ShootingSpeed;
         public float Damage => _weapon.Damage;
-        public CharacterComponent Target { get; set; }
+        public BaseCharacterComponent Target { get; set; }
         public Vector3 MovementDirection { get; set; }
         public Weapon Weapon => _weapon;
         public Rigidbody Rigidbody => _rigidbody;
@@ -46,7 +46,7 @@ namespace TestAssignment.Characters
             CurrentHealth = _startHealth;
         }
 
-        public void SetTarget(CharacterComponent target)
+        public void SetTarget(BaseCharacterComponent target)
         {
             Target = target;
         }

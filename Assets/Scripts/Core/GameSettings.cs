@@ -15,9 +15,9 @@ namespace TestAssignment.Core.Settings
         [SerializeField]
         private PlayerComponent _playerPrefab;
 
-        public CharacterComponent[] EnemiesPrefabs => _enemiesPrefabs;
+        public BaseCharacterComponent[] EnemiesPrefabs => _enemiesPrefabs;
         [SerializeField]
-        private CharacterComponent[] _enemiesPrefabs;
+        private BaseCharacterComponent[] _enemiesPrefabs;
 
         public int MinEnemiesCount => _minEnemiesCount;
         [SerializeField]

@@ -1,5 +1,6 @@
 ﻿using TestAssignment.Characters;
 using TestAssignment.Core.Data;
+using TestAssignment.UI.Components;
 using UnityEngine.UI;
 
 namespace TestAssignment.UI.Screens

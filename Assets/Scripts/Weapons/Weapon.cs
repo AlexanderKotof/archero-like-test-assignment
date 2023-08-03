@@ -14,12 +14,12 @@ namespace TestAssignment.Weapons
         [SerializeField]
         private float _shootingSpeed;
         [SerializeField]
-        private Projectile _projectile;
+        private ProjectileComponent _projectile;
 
         public string Name => _name;
         public string Description => _description;
         public int Damage => _damage;
         public float ShootingSpeed => _shootingSpeed;
-        public Projectile Projectile => _projectile;
+        public ProjectileComponent Projectile => _projectile;
     }
 }

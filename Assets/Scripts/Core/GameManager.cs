@@ -17,7 +17,7 @@ namespace TestAssignment.Core
     {
         public static GameManager Instance { get; private set; }
         public PlayerComponent Player { get; private set; }
-        public List<CharacterComponent> SpawnedEnemies { get; private set; } = new List<CharacterComponent>();
+        public List<BaseCharacterComponent> SpawnedEnemies { get; private set; } = new List<BaseCharacterComponent>();
         public bool GameStarted { get; private set; }
         public PlayerData PlayerData { get; private set; }
 
@@ -120,7 +120,7 @@ namespace TestAssignment.Core
                 StartNewGame();
             }
         }
-        private void OnEnemyDied(CharacterComponent enemy)
+        private void OnEnemyDied(BaseCharacterComponent enemy)
         {
             ObjectSpawnManager.Despawn(enemy);
 

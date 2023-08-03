@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace TestAssignment.UI.Screens
+namespace TestAssignment.UI.Components
 {
     public class JoystickComponent : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TestAssignment.Weapons
 {
-    public class Projectile : MonoBehaviour
+    public class ProjectileComponent : MonoBehaviour
     {
         [SerializeField]
         private float _speed;
@@ -17,7 +17,7 @@ namespace TestAssignment.Weapons
         private Vector3 _direction;
         public IShooting Attacker { get; private set; }
 
-        public delegate void CharacterHitHandler(CharacterComponent target, IShooting attacker);
+        public delegate void CharacterHitHandler(BaseCharacterComponent target, IShooting attacker);
         public CharacterHitHandler OnCharacterHit;
 
         public void Shot(IShooting attacker, Vector3 direction)
@@ -33,14 +33,14 @@ namespace TestAssignment.Weapons
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent<Projectile>(out _))
+            if (other.TryGetComponent<ProjectileComponent>(out _))
             {
                 return;
             }
 
-            if (other.TryGetComponent<CharacterComponent>(out var target))
+            if (other.TryGetComponent<BaseCharacterComponent>(out var target))
             {
-                if (target == (CharacterComponent)Attacker)
+                if (target == (BaseCharacterComponent)Attacker)
                     return;
 
                 OnCharacterHit?.Invoke(target, Attacker);

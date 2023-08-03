@@ -45,7 +45,7 @@ namespace TestAssignment.FSM.States
             }
         }
 
-        private void HitTarget(CharacterComponent target, IShooting attacker)
+        private void HitTarget(BaseCharacterComponent target, IShooting attacker)
         {
             target.TakeDamage(attacker.Damage);
         }
