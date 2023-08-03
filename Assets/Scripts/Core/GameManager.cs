@@ -18,7 +18,7 @@ namespace TestAssignment.Core
         public static GameManager Instance { get; private set; }
         public PlayerComponent Player { get; private set; }
         public List<BaseCharacterComponent> SpawnedEnemies { get; private set; } = new List<BaseCharacterComponent>();
-        public bool GameStarted { get; private set; }
+        public bool IsGameStarted { get; private set; }
         public PlayerData PlayerData { get; private set; }
 
         [SerializeField]
@@ -41,15 +41,28 @@ namespace TestAssignment.Core
         }
         private void Start()
         {
-            GameStarted = false;
+            IsGameStarted = false;
             CreateLevel();
             Player.SetWeapon(_gameSettings.DefaultWeapon);
             MainMenuViewPresenter.ShowMainMenu(StartCountdown);
         }
+        private void OnDestroy()
+        {
+            ObjectSpawnManager.Instance.Dispose();
+            _input.Dispose();
+
+            PlayerData = null;
+
+            SpawnedEnemies.Clear();
+            SpawnedEnemies = null;
+
+            LevelCompleted = null;
+            _levelGenerator = null;
+        }
 
         private void StartNewGame()
         {
-            GameStarted = false;
+            IsGameStarted = false;
             CreateLevel();
             StartCountdown();
         }
@@ -71,7 +84,7 @@ namespace TestAssignment.Core
             }
 
             InGameViewPresenter.ShowInGameScreen(Player, PlayerData, _input, OnPausePressed);
-            GameStarted = true;
+            IsGameStarted = true;
         }
 
         private void CreateLevel()

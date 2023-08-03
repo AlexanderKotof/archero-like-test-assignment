@@ -37,7 +37,7 @@ namespace TestAssignment.Characters
             var movingState = new FlyingState(this, _flyingHeight);
             var shootingState = new ShootingState(this);
 
-            awaitStartState.SetTransitions(new Transition(movingState, () => GameManager.Instance.GameStarted));
+            awaitStartState.SetTransitions(new Transition(movingState, () => GameManager.Instance.IsGameStarted));
             waitingState.SetTransitions(
                 new Transition(movingState, waitingState.WaitIsOver),
                 new Transition(shootingState, () => ShootingUtils.TargetIsVisible(this, Target))

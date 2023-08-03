@@ -27,7 +27,7 @@ namespace TestAssignment.Characters
             var shootingState = new ShootingState(this);
             _uncontrollableState = new WaitTimeState(_uncontrollableTime);
 
-            waitForStartState.SetTransitions(new Transition(standingState, () => GameManager.Instance.GameStarted));
+            waitForStartState.SetTransitions(new Transition(standingState, () => GameManager.Instance.IsGameStarted));
             standingState.SetTransitions(
                 new Transition(movingState, () => MovementDirection != Vector3.zero),
                 new Transition(shootingState, () => Target != null )
@@ -64,7 +64,7 @@ namespace TestAssignment.Characters
 
         private void Update()
         {
-            if (!GameManager.Instance.GameStarted)
+            if (!GameManager.Instance.IsGameStarted)
                 return;
 
             Target = GetNearestVisibleEnemy();
